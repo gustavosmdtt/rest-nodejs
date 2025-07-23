@@ -1,10 +1,10 @@
 const express = require('express');
-const app =  express();
+const app = express();
 const morgan = require('morgan');
 
-const rotaProdutos = require('./routes/produtos');
-const rotaPedidos = require('./routes/pedidos');
-const rotaUsuarios = require('./routes/usuarios');
+const productsRoutes = require('./routes/product');
+const orderRoutes = require('./routes/order');
+const userRoutes = require('./routes/user');
 
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false})) // apenas seta dados simples
@@ -21,13 +21,13 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use('/produtos', rotaProdutos);
-app.use('/pedidos', rotaPedidos);
-app.use('/usuarios', rotaUsuarios);
+app.use('/produtos', productsRoutes);
+app.use('/pedidos', orderRoutes);
+app.use('/usuarios', userRoutes);
 
 // Quando não encontra a rota, entra aqui:
 app.use((req, res, next) => {
-    const erro = new Error('Não encontrado')
+    const erro = new Error('Rota não encontrada');
     erro.status = 404;
     next(erro);
 });
@@ -35,8 +35,8 @@ app.use((req, res, next) => {
 app.use((error, req, res, next) => {
     res.status(error.status || 500);
     return res.send({
-        erro: {
-            mensagem: error.message
+        error: {
+            message: error.message
         }
     });
 });

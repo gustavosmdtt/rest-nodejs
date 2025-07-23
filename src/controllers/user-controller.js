@@ -1,44 +1,45 @@
-const express = require('express');
 const mysql = require('../mysql').pool;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 
-exports.cadastro = (req, res, next) => {
+exports.register = (req, res, next) => {
     mysql.getConnection((error, connection) => {
         if (error) {
             return res.status(500).send({ error: error })
         }
 
         connection.query(
-            'SELECT * FROM usuarios WHERE email = ?',
+            'SELECT * FROM users WHERE email = ?',
             [req.body.email],
             (error, results) => {
                 if (error) {
                     return res.status(500).send({ error: error })
                 }
 
+                if (req.body.password.length < 8) {
+                    return res.status(400).send({ message: 'Password must be at least 8 characters long' })
+                }
+
                 if (results.length > 0) {
-                    res.status(401).send({ mensagem: "Usuário já cadastrado"})
+                    res.status(401).send({ message: 'User already registered' })
                 } else {
                     let numSalt = 10
-                    bcrypt.hash(req.body.senha.toString(), numSalt, (errorBcrypt, hash) => {
+                    bcrypt.hash(req.body.password.toString(), numSalt, (errorBcrypt, hash) => {
                         if (errorBcrypt) {
                             return res.status(500).send({ error: errorBcrypt })
                         }
-            
                         connection.query(
-                            `INSERT INTO usuarios (email, senha) VALUES (?,?)`,
+                            `INSERT INTO users (email, password) VALUES (?,?)`,
                             [req.body.email, hash],
                             (error, result) => {
                                 connection.release();
                                 if (error) {
                                     return res.status(500).send({ error: error })
                                 }
-            
                                 response = {
-                                    mensagem: 'Usuário criado com sucesso',
-                                    usuarioCriado: {
-                                        id_usuario: result.insertId,
+                                    message: 'User successfully created',
+                                    userCreated: {
+                                        userId: result.insertId,
                                         email: req.body.email
                                     }
                                 }
@@ -60,7 +61,7 @@ exports.login = (req, res, next) => {
         }
  
         connection.query(
-            `SELECT * FROM usuarios WHERE email = ?`,
+            `SELECT * FROM users WHERE email = ?`,
             [req.body.email],
             (error, results, fields) => {
                 connection.release();
@@ -70,17 +71,17 @@ exports.login = (req, res, next) => {
                 }
 
                 if (results.length < 1) {
-                    return res.status(401).send({ mensagem: 'Falha na autenticação' })
+                    return res.status(401).send({ message: 'Authentication failed' })
                 }
 
-                bcrypt.compare(req.body.senha.toString(), results[0].senha, (error, result) => {
+                bcrypt.compare(req.body.password.toString(), results[0].password, (error, result) => {
                     if (error) {
-                        return res.status(401).send({ mensagem: 'Falha na autenticação' })
+                        return res.status(401).send({ message: 'Authentication failed' })
                     }
 
                     if (result) {
                         const token = jwt.sign({
-                            id_usuario: results[0].id_usuario,
+                            userId: results[0].userId,
                             email: results[0].email
                         },
                         `${process.env.JWT_KEY}`,
@@ -88,12 +89,12 @@ exports.login = (req, res, next) => {
                             expiresIn: '1h' 
                         });
                         return res.status(200).send({
-                            mensagem: 'Autenticado com sucesso',
+                            message: 'Autenticado com sucesso',
                             token: token
                         })
                     }
 
-                    return res.status(401).send({ mensagem: 'Falha na autenticação' })
+                    return res.status(401).send({ message: 'Authentication failed' })
                 })
         })
     }) 
