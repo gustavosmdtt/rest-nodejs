@@ -1,5 +1,5 @@
 const mysql = require('../mysql').pool;
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 
 exports.register = (req, res, next) => {
@@ -24,7 +24,7 @@ exports.register = (req, res, next) => {
                     res.status(401).send({ message: 'User already registered' })
                 } else {
                     let numSalt = 10
-                    bcrypt.hash(req.body.password.toString(), numSalt, (errorBcrypt, hash) => {
+                    bcrypt.hash(req.body.password, numSalt, (errorBcrypt, hash) => {
                         if (errorBcrypt) {
                             return res.status(500).send({ error: errorBcrypt })
                         }
@@ -57,7 +57,7 @@ exports.register = (req, res, next) => {
 exports.login = (req, res, next) => {
     mysql.getConnection((error, connection) => {
         if (error) {
-            return res.status(500).send({ error: error })
+            return res.status(500).send({ error: error });
         }
  
         connection.query(
@@ -69,14 +69,14 @@ exports.login = (req, res, next) => {
                 if (error) {
                     return res.status(500).send({ error: error })
                 }
-
-                if (results.length < 1) {
-                    return res.status(401).send({ message: 'Authentication failed' })
+                console.log(results);
+                if (results.length === 0) {
+                    return res.status(401).send({ message: 'Invalid credentials' });
                 }
 
-                bcrypt.compare(req.body.password.toString(), results[0].password, (error, result) => {
+                bcrypt.compare(req.body.password, results[0].password, (error, result) => {                    
                     if (error) {
-                        return res.status(401).send({ message: 'Authentication failed' })
+                        return res.status(500).send({ message: 'Internal server error' });
                     }
 
                     if (result) {
@@ -89,12 +89,12 @@ exports.login = (req, res, next) => {
                             expiresIn: '1h' 
                         });
                         return res.status(200).send({
-                            message: 'Autenticado com sucesso',
+                            message: 'Authentication successful',
                             token: token
-                        })
+                        });
                     }
 
-                    return res.status(401).send({ message: 'Authentication failed' })
+                    return res.status(401).send({ message: 'Invalid credentials' });
                 })
         })
     }) 
