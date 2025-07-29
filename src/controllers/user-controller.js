@@ -59,7 +59,7 @@ exports.login = (req, res, next) => {
         if (error) {
             return res.status(500).send({ error: error })
         }
- 
+
         connection.query(
             `SELECT * FROM users WHERE email = ?`,
             [req.body.email],
@@ -70,11 +70,20 @@ exports.login = (req, res, next) => {
                     return res.status(500).send({ error: error })
                 }
 
-                if (results.length < 1) {
-                    return res.status(401).send({ message: 'Authentication failed' })
+
+                if (!req.body.email || typeof req.body.email !== 'string' || !req.body.email.trim()) {
+                    return res.status(400).json({ message: 'Email is required' });
                 }
 
-                bcrypt.compare(req.body.password.toString(), results[0].password, (error, result) => {
+                if (!req.body.password || typeof req.body.password !== 'string' || !req.body.password.trim()) {
+                    return res.status(400).json({ message: 'Password is required' });
+                }
+
+                if (results.length === 0) {
+                    return res.status(401).send({ message: 'Invalid credentials' });
+                }
+
+                bcrypt.compare(req.body.password, results[0].password, (error, result) => {
                     if (error) {
                         return res.status(401).send({ message: 'Authentication failed' })
                     }
@@ -84,10 +93,10 @@ exports.login = (req, res, next) => {
                             userId: results[0].userId,
                             email: results[0].email
                         },
-                        `${process.env.JWT_KEY}`,
-                        {
-                            expiresIn: '1h' 
-                        });
+                            `${process.env.JWT_KEY}`,
+                            {
+                                expiresIn: '1h'
+                            });
                         return res.status(200).send({
                             message: 'Autenticado com sucesso',
                             token: token
@@ -96,6 +105,6 @@ exports.login = (req, res, next) => {
 
                     return res.status(401).send({ message: 'Authentication failed' })
                 })
-        })
-    }) 
+            })
+    })
 }
