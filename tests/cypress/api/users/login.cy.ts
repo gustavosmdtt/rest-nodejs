@@ -22,7 +22,7 @@ describe('User - Login API', () => {
             url: 'usuarios/cadastro',
         }
 
-        cy.api_makeRequest(newUser);
+        cy.api_makeRequest<UserResponse>(newUser);
     })
 
     it('should login an existing user', () => {        
