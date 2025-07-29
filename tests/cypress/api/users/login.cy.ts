@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { APIPayload } from "tests/cypress/types/types";
-import { UserPayload } from "tests/cypress/types/users";
+import { UserPayload, UserResponse } from "tests/cypress/types/users";
 
 describe('User - Login API', () => {
     const fakerEmail = faker.internet.email();
@@ -26,7 +26,7 @@ describe('User - Login API', () => {
     })
 
     it('should login an existing user', () => {        
-        cy.api_makeRequest(options).then((res) => {
+        cy.api_makeRequest<UserResponse>(options).then((res) => {
             expect(res.body.message).to.equal('Authentication successful');
             expect(res.body.token).to.be.a('string');
             expect(res.status).to.equal(200);
@@ -42,7 +42,7 @@ describe('User - Login API', () => {
             }
         }
 
-        cy.api_makeRequest(invalidOptions).then((res) => {
+        cy.api_makeRequest<UserResponse>(invalidOptions).then((res) => {
             expect(res.body.message).to.equal('Invalid credentials');
             expect(res.status).to.equal(401);
         })

@@ -1,5 +1,5 @@
 import { APIPayload } from "tests/cypress/types/types";
-import { UserPayload } from "tests/cypress/types/users";
+import { UserPayload, UserResponse } from "tests/cypress/types/users";
 import { faker } from '@faker-js/faker';
 
 describe('User - Register API', () => {
@@ -18,9 +18,7 @@ describe('User - Register API', () => {
     })
 
     it('should not register with existing email', () => {
-        cy.api_makeRequest(registryOptions).then((res) => {
-            console.log(res);
-            
+        cy.api_makeRequest<UserResponse>(registryOptions).then((res) => {
             expect(res.status).to.equal(401);
             expect(res.body.message).to.equal('User already registered');
         });
@@ -35,7 +33,7 @@ describe('User - Register API', () => {
             }
         }
 
-        cy.api_makeRequest(newOptions).then((res) => {
+        cy.api_makeRequest<UserResponse>(newOptions).then((res) => {
             expect(res.status).to.equal(400);
             expect(res.body.message).to.equal('Password must be at least 8 characters long');
         });
@@ -50,7 +48,7 @@ describe('User - Register API', () => {
             }
         }
 
-        cy.api_makeRequest(newOptions).then((res) => {
+        cy.api_makeRequest<UserResponse>(newOptions).then((res) => {
             expect(res.status).to.equal(201);
             expect(res.body.message).to.equal('User successfully created');
             expect(res.body.userCreated?.email).to.equal(newOptions.body.email);
