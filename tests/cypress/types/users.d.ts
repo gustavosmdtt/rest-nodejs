@@ -3,7 +3,7 @@ export type UserPayload = {
     password: string
 }
 
-export type userResponse = {
+export type UserResponse = {
     message: string
     token?: string
     userCreated?: {
