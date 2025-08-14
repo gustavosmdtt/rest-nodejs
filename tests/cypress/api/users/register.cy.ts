@@ -19,8 +19,8 @@ describe('User - Register API', () => {
 
     it('should not register with existing email', () => {
         cy.api_makeRequest<UserResponse>(registryOptions).then((res) => {
-            expect(res.status).to.equal(401);
-            expect(res.body.message).to.equal('User already registered');
+            expect(res.status).to.equal(400);
+            expect(res.body.message).to.equal('Email already exists');
         });
     });
 
