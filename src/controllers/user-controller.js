@@ -42,7 +42,7 @@ exports.login = (req, res, next) => {
             });
 
         return res.status(200).send({
-            message: 'Autenticado com sucesso',
+            message: 'Authentication successful',
             token: token
         });
 
