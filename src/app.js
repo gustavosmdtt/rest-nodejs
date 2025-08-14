@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
+const { handleFormatJsonError } = require('./middleware/validations');
 
-const productsRoutes = require('./routes/product');
+const productRoutes = require('./routes/product');
 const orderRoutes = require('./routes/order');
 const userRoutes = require('./routes/user');
 
@@ -21,7 +22,7 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use('/produtos', productsRoutes);
+app.use('/produtos', productRoutes);
 app.use('/pedidos', orderRoutes);
 app.use('/usuarios', userRoutes);
 
@@ -40,5 +41,7 @@ app.use((error, req, res, next) => {
         }
     });
 });
+
+app.use(handleFormatJsonError);
 
 module.exports = app;
