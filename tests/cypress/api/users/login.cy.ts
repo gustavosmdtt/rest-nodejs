@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
-import { APIPayload } from "tests/cypress/types/types";
-import { UserPayload, UserResponse } from "tests/cypress/types/users";
+import { APIPayload, ErrorResponse } from "tests/cypress/types/types";
+import { UserPayload, UserSuccessResponse } from "tests/cypress/types/users";
 
 describe('User - Login API', () => {
     const fakerEmail = faker.internet.email();
@@ -14,7 +14,7 @@ describe('User - Login API', () => {
             email: fakerEmail,
             password: fakerPass
         }
-    }
+    };
 
     before(() => {
         const newUser: APIPayload<UserPayload> = {
@@ -22,15 +22,7 @@ describe('User - Login API', () => {
             url: 'usuarios/cadastro',
         }
 
-        cy.api_makeRequest<UserResponse>(newUser);
-    })
-
-    it('should login an existing user', () => {        
-        cy.api_makeRequest<UserResponse>(options).then((res) => {
-            expect(res.body.message).to.equal('Authentication successful');
-            expect(res.body.token).to.be.a('string');
-            expect(res.status).to.equal(200);
-        })
+        cy.api_makeRequest<UserSuccessResponse>(newUser);
     });
 
     it('should not login with invalid credentials', () => {
@@ -40,11 +32,19 @@ describe('User - Login API', () => {
                 email: fakerEmail,
                 password: 'wrongpassword'
             }
-        }
-
-        cy.api_makeRequest<UserResponse>(invalidOptions).then((res) => {
+        };
+        
+        cy.api_makeRequest<ErrorResponse>(invalidOptions).then((res) => {
             expect(res.body.message).to.equal('Invalid credentials');
             expect(res.status).to.equal(401);
-        })
+        });
+    });
+
+    it('should login an existing user', () => {        
+        cy.api_makeRequest<UserSuccessResponse>(options).then((res) => {
+            expect(res.body.message).to.equal('Authentication successful');
+            expect(res.body.token).to.be.a('string');
+            expect(res.status).to.equal(200);
+        });
     });
 });

@@ -3,10 +3,10 @@ export type UserPayload = {
     password: string
 }
 
-export type UserResponse = {
+export type UserSuccessResponse = {
     message: string
-    token?: string
-    userCreated?: {
+    token: string
+    userCreated: {
         userId: number,
         email: string
     }
