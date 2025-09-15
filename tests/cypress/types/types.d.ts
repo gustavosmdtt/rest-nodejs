@@ -9,4 +9,15 @@ export type APIPayload<T = any> = {
 	body?: T
 }
 
-export type APIResponse<T = any> = T
+export type ErrorResponse = {
+	message: string
+}
+
+export type ErrorOptions = {
+    status: 400 | 404 | 500 | 401 | 403
+    message: string
+}
+
+export type DeleteSuccessResponse = {
+    message: string
+}
