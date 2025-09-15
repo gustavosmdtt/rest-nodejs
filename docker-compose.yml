@@ -22,14 +22,8 @@ services:
     depends_on:
       - mysql
     restart: always
-    environment:
-      MYSQL_HOST: ${MYSQL_HOST}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_PORT: ${MYSQL_PORT}
-      JWT_KEY: ${JWT_KEY}
-      NODE_ENV: development
+    env_file:
+      - ./docker.env
     ports:
       - "3000:3000"
     command: npx nodemon server.js
