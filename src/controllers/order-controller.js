@@ -1,51 +1,17 @@
 const mysql = require('../mysql').pool;
+const orderDAO = require('../DAO/orderDAO');
+const OrderService = require('../services/orderService');
 
-exports.getAllOrder = (req, res, next) => {
-    mysql.getConnection((error, connection) => {
-        if (error) {
-            return res.status(500).send({ error: error })
-        }
+const orderServiceInstance = new OrderService(orderDAO);
 
-        connection.query(
-            `SELECT orders.orderId, 
-                    orders.quantity, 
-                    products.productId, 
-                    products.title,
-                    products.price
-               FROM orders
-         INNER JOIN products
-                 ON products.productId = orders.productId;`,
-            (error, result, field) => {
-                connection.release();
-
-                if (error) {
-                    return res.status(500).send({ error: error })
-                }
-
-                if (result.length == 0) {
-                    return res.status(403).send({
-                        message: 'No orders have been registered yet'
-                    });
-                }
-
-                const response = {
-                    orders: result.map(order => {
-                        return {
-                            orderId: order.orderId,
-                            quantity: order.quantity,
-                            product: {
-                                productId: order.productId,
-                                title: order.title,
-                                price: order.price
-                            }
-                        }
-                    })
-                }
-                return res.status(200).send(response)
-            }
-        )
-    })
-}
+exports.getAllOrder = async (req, res, next) => {
+    try {
+        const result = await orderServiceInstance.getAllOrders(req.dbConnection);
+        return res.status(200).send(result);
+    } catch (error) {
+        return res.status(error.status).send(error.response);
+    }
+};
 
 exports.addOrder = (req, res, next) => {
     mysql.getConnection((error, connection) => {

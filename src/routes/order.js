@@ -1,10 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const OrderController = require('../controllers/order-controller');
+const { handleDatabaseConnection } = require('../middleware/database');
+const { required } = require('../middleware/auth');
 
-router.get('/', OrderController.getAllOrder);
-router.post('/', OrderController.addOrder);
-router.get('/:orderId', OrderController.getOrderById);
-router.delete('/:orderId', OrderController.deleteOrder);
+router.get(
+    '/',
+    required,
+    handleDatabaseConnection,
+    OrderController.getAllOrder);
+
+router.post('/', required, OrderController.addOrder);
+router.get('/:orderId', required, OrderController.getOrderById);
+router.delete('/:orderId', required, OrderController.deleteOrder);
 
 module.exports = router;
