@@ -71,23 +71,20 @@ describe('Order - API adding a order', () => {
 
         it('should add a new order', () => {
             cy.seedProductDB({ title: 'Livro', price: 9.90 }).then((result) => {
-                payloadWithAuth = {
-                    body: {
-                        productId: result.productId,
-                        quantity: 2
-                    }
+                payloadWithAuth.body = {
+                    productId: result.productId,
+                    quantity: 2
                 }
+                
+                cy.api_makeRequest<addOrderSuccessResponse>(payloadWithAuth)
+                    .then((response) => {
+                        expect(response.status).to.equal(201);
+                        expect(response.body.message).to.equal('Order successfully inserted');
+                        expect(response.body.order).to.have.property('orderId');
+                        expect(response.body.order.productId).to.equal(payload.body.productId);
+                        expect(response.body.order.quantity).to.equal(payload.body.quantity);
+                    });
             });
-
-            cy.api_makeRequest<addOrderSuccessResponse>(payloadWithAuth)
-                .then((response) => {
-                    expect(response.status).to.equal(201);
-                    expect(response.body.message).to.equal('Order successfully inserted');
-                    // expect(response.body.order).to.have.property('orderId'); // Investigar pq o orderID não está passando para o response
-                    expect(response.body.order.productId).to.equal(payload.body.productId);
-                    expect(response.body.order.quantity).to.equal(payload.body.quantity);
-                });
-
         });
     });
 });
