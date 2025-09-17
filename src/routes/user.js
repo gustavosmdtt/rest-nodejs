@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/user-controller');
-const { verifyLoginFields, verifyPassword, verifyLengthPassword, verifyEmailAlreadyExists } = require('../middleware/validations');
+const { verifyLoginFields, verifyPassword, verifyLengthPassword, verifyEmailAlreadyExists } = require('../middleware/validations/user');
 const { handleDatabaseConnection } = require('../middleware/database');
 const { findUserByEmail } = require('../middleware/findUser');
 
