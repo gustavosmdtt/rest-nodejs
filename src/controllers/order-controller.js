@@ -39,34 +39,13 @@ exports.getOrderById = async (req, res, next) => {
     }
 }
 
-exports.deleteOrder = (req, res, next) => {
-    mysql.getConnection((error, connection) => {
+exports.deleteOrder = async (req, res, next) => {
+    try {
+        const orderId = req.params.orderId;
+        const result = await orderServiceInstance.deleteOrder(req.dbConnection, orderId);
 
-        if (error) {
-            return res.status(500).send({ error: error })
-        }
-
-        connection.query(
-            `DELETE FROM orders WHERE orderId = ?`,
-            [req.body.orderId],
-            (error, result, field) => {
-                connection.release();
-
-                if (error) {
-                    return res.status(500).send({ error: error })
-                }
-
-                if (result.length == 0) {
-                    return res.status(404).send({
-                        message: 'Order not found for the provided ID'
-                    })
-                }
-
-                const response = {
-                    message: 'Order successfully deleted',
-                }
-                res.status(202).send(response)
-            }
-        )
-    })
-}
+        return res.status(202).send(result);
+    } catch (error) {
+        return res.status(error.status || 500).send(error.response);
+    }
+};

@@ -39,3 +39,15 @@ exports.getOrderById = async (dbConnection, id) => {
         throw error
     };
 };
+
+exports.deleteOrder = async (dbConnection, id) => {
+    try {
+        const [results] = await dbConnection.query(
+            'DELETE FROM orders WHERE orderId = ?',
+            [id]
+        );
+        return results;
+    } catch (error) {
+        throw error
+    };
+};

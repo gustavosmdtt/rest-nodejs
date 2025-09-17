@@ -29,6 +29,11 @@ router.get('/:orderId',
     handleDatabaseConnection,
     OrderController.getOrderById);
 
-router.delete('/:orderId', required, OrderController.deleteOrder);
+router.delete(
+    '/:orderId',
+    required,
+    handleTypeOrderFormat,
+    handleDatabaseConnection,
+    OrderController.deleteOrder);
 
 module.exports = router;

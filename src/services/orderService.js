@@ -49,7 +49,7 @@ class OrderService {
     async getOrderById(dbConnection, id) {
         const order = await this.orderDAO.getOrderById(dbConnection, id);
 
-        if(order.length === 0) {
+        if (order.length === 0) {
             const error = {
                 status: 404,
                 response: {
@@ -65,6 +65,26 @@ class OrderService {
                 quantity: order[0].quantity,
                 productId: order[0].productId
             }
+        };
+
+        return response;
+    };
+
+    async deleteOrder(dbConnection, id) {
+        const result = await this.orderDAO.deleteOrder(dbConnection, id);
+
+        if (result.affectedRows === 0) {
+            const error = {
+                status: 404,
+                response: {
+                    message: 'Order not found for the provided ID'
+                }
+            };
+            throw error;
+        }
+
+        const response = {
+            message: 'Order successfully deleted'
         };
 
         return response;
