@@ -27,3 +27,15 @@ exports.addOrder = async (dbConnection, orderData) => {
         throw error;
     };
 };
+
+exports.getOrderById = async (dbConnection, id) => {
+    try {
+        const [results] = await dbConnection.query(
+            'SELECT * FROM orders WHERE orderId = ?',
+            [id]
+        );
+        return results;
+    } catch (error) {
+        throw error
+    };
+};
