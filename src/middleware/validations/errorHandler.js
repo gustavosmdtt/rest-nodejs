@@ -9,7 +9,7 @@ const handleFormatJsonError = (err, req, res, next) => {
     next(err);
 }
 
-const handleQuantityTypeError = (req, res, next) => {
+const handleTypeQuantityFormat = (req, res, next) => {
     const quantity = req.body.quantity;
     if (quantity === undefined || quantity === null || isNaN(quantity) || Number(quantity) <= 0) {
         return res.status(400).send({
@@ -22,5 +22,5 @@ const handleQuantityTypeError = (req, res, next) => {
 
 module.exports = { 
     handleFormatJsonError,
-    handleQuantityTypeError
+    handleTypeQuantityFormat
 };
