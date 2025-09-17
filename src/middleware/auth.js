@@ -1,4 +1,4 @@
-const { jwtVerify } = require('jsonwebtoken');
+const { verify } = require('jsonwebtoken');
 
 const required = async (req, res, next) => {
     try {
@@ -13,7 +13,7 @@ const required = async (req, res, next) => {
             return res.status(401).json({ message: 'Token not provided' });
         }
 
-        const decoded = await jwtVerify(token, process.env.JWT_KEY);
+        const decoded = await verify(token, process.env.JWT_KEY);
         req.user = decoded;
         next();
     } catch (error) {
@@ -30,7 +30,7 @@ const optional = async (req, res, next) => {
         const token = authHeader.split(' ')[1];
         if (!token) return next();
 
-        const decoded = await jwtVerify(token, process.env.JWT_KEY);
+        const decoded = await verify(token, process.env.JWT_KEY);
         req.user = decoded;
     } catch (_) {
         // Ignore error
