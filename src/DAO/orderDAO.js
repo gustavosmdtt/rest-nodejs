@@ -13,5 +13,17 @@ exports.getAllOrders = async (dbConnection) => {
         return results;
     } catch (error) {
         throw error;
-    }
+    };
+};
+
+exports.addOrder = async (dbConnection, orderData) => {
+    try {
+        const [results] = await dbConnection.query(
+            'INSERT INTO orders (productId, quantity) VALUES (?,?)',
+            [orderData.productId, orderData.quantity]
+        );
+        return results;
+    } catch (error) {
+        throw error;
+    };
 };

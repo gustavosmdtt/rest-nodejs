@@ -29,7 +29,22 @@ class OrderService {
         };
 
         return response;
-    }
-}
+    };
+
+    async addOrder(dbConnection, orderData) {
+        const result = await this.orderDAO.addOrder(dbConnection, orderData);
+
+        const response = {
+            message: 'Order successfully inserted',
+            order: {
+                orderId: result.insertId,
+                productId: orderData.productId,
+                quantity: orderData.quantity
+            }
+        };
+
+        return response;
+    };
+};
 
 module.exports = OrderService;
