@@ -1,16 +1,5 @@
 const bcrypt = require('bcryptjs');
 
-const handleFormatJsonError = (err, req, res, next) => {
-    if (err.type === 'entity.parse.failed') {
-        return res.status(400).json({
-            message: 'Invalid JSON format',
-            error: err.message
-        });
-    }
-
-    next(err);
-}
-
 const verifyLoginFields = (req, res, next) => {
     if (!req.body.email || typeof req.body.email !== 'string' || !req.body.email.trim()) {
         return res.status(400).json({ message: 'Valid email is required' });
@@ -76,7 +65,6 @@ const verifyEmailAlreadyExists = async (req, res, next) => {
 };
 
 module.exports = {
-    handleFormatJsonError,
     verifyEmailAlreadyExists,
     verifyLoginFields,
     verifyPassword,
