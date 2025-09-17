@@ -84,8 +84,9 @@ exports.getProductById = (req, res, next) => {
         if (error) {
             return res.status(500).send({ error: error })
         }
+
         connection.query(
-            'SELECT * FROM products WHERE productId = ?;',
+            'SELECT * FROM products WHERE productId = ?',
             [req.params.productId],
             (error, result, field) => {
                 connection.release();
