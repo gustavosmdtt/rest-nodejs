@@ -62,4 +62,6 @@ Para rodar os testes de comportamento (BDD) que seguem o fluxo descrito nos arqu
 npm test
 ```
 
-Criado com ♥️ por Gustavo Schmidt.
+---
+
+> Criado com ♥️ por Gustavo Schmidt.
