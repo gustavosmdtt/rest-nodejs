@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
-const { handleFormatJsonError } = require('./middleware/validations');
+const { handleFormatJsonError } = require('./middleware/validations/errorHandler');
 
 const productRoutes = require('./routes/product');
 const orderRoutes = require('./routes/order');

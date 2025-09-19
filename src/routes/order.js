@@ -1,10 +1,39 @@
 const express = require('express');
 const router = express.Router();
 const OrderController = require('../controllers/order-controller');
+const { handleDatabaseConnection } = require('../middleware/database');
+const { required } = require('../middleware/auth');
+const { handleTypeQuantityFormat } = require('../middleware/validations/errorHandler');
+const { verifyProductExists } = require('../middleware/validations/product');
+const { handleTypeOrderFormat } = require('../middleware/validations/order');
 
-router.get('/', OrderController.getAllOrder);
-router.post('/', OrderController.addOrder);
-router.get('/:orderId', OrderController.getOrderById);
-router.delete('/:orderId', OrderController.deleteOrder);
+
+router.get(
+    '/',
+    required,
+    handleDatabaseConnection,
+    OrderController.getAllOrder);
+
+router.post(
+    '/',
+    required,
+    handleTypeQuantityFormat,
+    handleDatabaseConnection,
+    verifyProductExists,
+    OrderController.addOrder
+);
+
+router.get('/:orderId',
+    required,
+    handleTypeOrderFormat,
+    handleDatabaseConnection,
+    OrderController.getOrderById);
+
+router.delete(
+    '/:orderId',
+    required,
+    handleTypeOrderFormat,
+    handleDatabaseConnection,
+    OrderController.deleteOrder);
 
 module.exports = router;

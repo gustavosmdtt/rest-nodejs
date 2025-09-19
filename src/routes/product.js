@@ -1,12 +1,48 @@
 const express = require('express');
 const router = express.Router();
-const login = require('../middleware/auth');
-const productController = require('../controllers/product-controller')
+const { required } = require('../middleware/auth');
+const { handleDatabaseConnection } = require('../middleware/database');
+const { verifyPriceType, verifyTitleType } = require('../middleware/validations/product');
 
-router.get('/', login.required, productController.getAllProduct);
-router.post('/', login.required, productController.addProduct);
-router.get('/:id_produto', login.required, productController.getProductById);
-router.patch('/', login.required, productController.updateProduct);
-router.delete('/', login.required, productController.deleteProduct);
+const productController = require('../controllers/product-controller');
+
+router.get(
+    '/',
+    required,
+    handleDatabaseConnection,
+    productController.getAllProduct
+);
+
+router.post(
+    '/',
+    required,
+    verifyPriceType,
+    verifyTitleType,
+    handleDatabaseConnection,
+    productController.addProduct
+);
+
+router.get(
+    '/:productId',
+    required,
+    handleDatabaseConnection,
+    productController.getProductById
+);
+
+router.put(
+    '/:productId',
+    required,
+    handleDatabaseConnection,
+    verifyPriceType,
+    verifyTitleType,
+    productController.updateProduct
+);
+
+router.delete(
+    '/:productId',
+    required,
+    handleDatabaseConnection,
+    productController.deleteProduct
+);
 
 module.exports = router;

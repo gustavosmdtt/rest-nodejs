@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS products (
   productId INT NOT NULL AUTO_INCREMENT,
   title VARCHAR(45) NOT NULL,
-  price FLOAT NOT NULL,
+  price DECIMAL(10, 2) NOT NULL,
   PRIMARY KEY (productId)
 );
 
@@ -21,4 +21,10 @@ CREATE TABLE IF NOT EXISTS orders (
   productId INT,
   PRIMARY KEY (orderId),
   FOREIGN KEY (productId) REFERENCES products(productId)
+);
+
+INSERT INTO users (email, password)
+VALUES (
+    'apiuser@foo.com',
+    '$2b$10$3WwCGDBDXoGKPoJufHgaS.FigZVAqoxOXQXRccFEnj1u2.z4OwAbS'
 );

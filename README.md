@@ -1,49 +1,63 @@
 # API REST com NodeJS
 
-Este projeto foi realizado com o intuito de estudar e aprender sobre NodeJS. Sendo meu primeiro contato com o framework, aproveitei para implementar testes e2e de API com PactumJS + Cucumber.
+Uma API de estudos construída com NodeJS e Express, focada em boas práticas de desenvolvimento, mas com enfasê nos testes de API automatizados com Cypress e PactumJS.
 
-- Projeto desenvolvido a partir do curso [REST API com Node.JS](https://www.youtube.com/watch?v=d_vXgK4uZJM&list=PLWgD0gfm500EMEDPyb3Orb28i7HK5_DkR)
-- Testes inspirados no [Boilerplate Project](https://github.com/pactumjs/pactum-cucumber-boilerplate)
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-20+-brightgreen?logo=node.js" alt="NodeJS version">
+  <img src="https://img.shields.io/badge/Docker-Enabled-blue?logo=docker" alt="Docker">
+  <img src="https://img.shields.io/badge/API%20Tests-Cypress-informational?logo=cypress" alt="Cypress API Tests">
+  <img src="https://img.shields.io/badge/BDD%20Tests-Cucumber-28a745?logo=cucumber" alt="Cucumber BDD Tests">
+  <img src="https://img.shields.io/badge/License-ISC-lightgrey" alt="License">
+</p>
 
-## Requisitos
-Para realizar o projeto, utilizei as seguintes versões:
-- [NodeJS](https://nodejs.org/en/) (v16.16.0)
-- NPM (v8.16.0)
+## Visão Geral
 
-## Instalação
-Após clonar o repositório, rode o comando `npm install` (ou `npm i` como diminutivo)
+Este é um projeto de portfólio que implementa uma API REST para um e-commerce simples. Inclui autenticação de usuário via JWT, operações CRUD para produtos e pedidos, e duas suítes de testes distintas para garantir a qualidade.
 
-## Configurações
-- Para a aplicação funcionar é necessário a criação do banco de dados, portanto, execute as seguintes querys para criar o banco de dados e as tabelas:
+## Stacks
 
-```sql
-CREATE DATABASE comercio;
+-   **Backend:** NodeJS, Express
+-   **Banco de Dados:** MySQL
+-   **Testes de API:** Cypress + Typescript | PactumJS + Cucumber
+-   **Containerização:** Docker, Docker Compose
 
-CREATE TABLE usuarios (
-  id_usuario INT NOT NULL AUTO_INCREMENT,
-  email VARCHAR(55) NOT NULL,
-  senha VARCHAR(255) NOT NULL,
-  PRIMARY KEY (id_usuario)
-);
+## Executando o Projeto
 
-CREATE TABLE produtos (
-  id_produto INT NOT NULL AUTO_INCREMENT,
-  nome VARCHAR(45) NOT NULL,
-  preco FLOAT NOT NULL
-  PRIMARY KEY (id_produto)
-);
+1.  **Clone o projeto:**
+    ```bash
+    git clone git@github.com:gustavosmdtt/rest-nodejs.git
+    ```
+2.  **Crie os arquivos de ambiente:**
+    Use os arquivos de exemplo para criar as variáveis de ambiente necessárias.
+    ```bash
+    cp docker.env && cp .env
+    ```
+3. **Instale as dependências**
+    ```bash
+    npm install
+    ```
+4.  **Faça o build das imagens da docker:**
+    ```bash
+    docker-compose up --build
+    ```
+    A API estará rodando em `http://localhost:3000`.
 
-CREATE TABLE pedidos (
-  id_pedidos INT NOT NULL AUTO_INCREMENT,
-  quantidade SMALLINT NOT NULL,
-  id_produto INT
-  FOREIGN KEY (id_produto) REFERENCES produtos(id_produto)
-);
+## 🧪 Testando
+
+O projeto possui duas formas de testes. Certifique-se de que a aplicação esteja em execução antes de rodá-los.
+
+#### Testes de API (Cypress)
+
+Para rodar os testes de API que validam cada endpoint individualmente.
+
+```bash
+npm run cy-api
 ```
 
-- É necessário atualizar o arquivo `nodemon.json` com os dados do banco local.
+#### Testes BDD (PactumJS + Cucumber)
 
-## Rodando a aplicação e os testes
-Para executar a aplicação, execute o script `npm start` ou `nodemon server.js`
+Para rodar os testes de comportamento (BDD) que seguem o fluxo descrito nos arquivos `.feature`.
 
-Para executar os testes, execute o script `npm test` ou `cucumber-js`
+```bash
+npm test
+```

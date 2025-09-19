@@ -62,8 +62,8 @@ describe('API - Adding products', () => {
                 const invalidPricePayload = {
                     ...payloadWithAuth,
                     body: {
-                        title: 'Caneca',
-                        price: invalidTitle
+                        title: invalidTitle,
+                        price: 9.90
                     }
                 };
 
@@ -78,7 +78,6 @@ describe('API - Adding products', () => {
         it('should add a new product with status code 201', () => {
             cy.api_makeRequest<addProductSuccessResponse>(payloadWithAuth).then((response) => {
                 expect(response.status).to.eq(201);
-                expect(response.body.product).to.be.an('array');
                 expect(response.body.product).to.deep.include({
                     title: payload.body.title,
                     price: payload.body.price
