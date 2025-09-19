@@ -61,3 +61,5 @@ Para rodar os testes de comportamento (BDD) que seguem o fluxo descrito nos arqu
 ```bash
 npm test
 ```
+
+Criado com ♥️ por Gustavo Schmidt.
