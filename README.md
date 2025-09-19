@@ -42,7 +42,7 @@ Este é um projeto de portfólio que implementa uma API REST para um e-commerce 
     ```
     A API estará rodando em `http://localhost:3000`.
 
-## 🧪 Testando
+## Testando
 
 O projeto possui duas formas de testes. Certifique-se de que a aplicação esteja em execução antes de rodá-los.
 
