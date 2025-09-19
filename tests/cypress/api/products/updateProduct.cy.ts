@@ -90,18 +90,23 @@ describe('API - Update products', () => {
             const product = { title: 'Bola de Vôlei', price: 59.90 }
 
             cy.seedProductDB(product).then((result) => {
-                payloadWithAuth = {
-                    url: `produtos/${result.productId}`
+                const productUpdatedPayload = {
+                    ...payloadWithAuth,
+                    url: `produtos/${result.productId}`,
+                    body: {
+                        title: product.title,
+                        price: product.price
+                    }
                 };
 
-                cy.api_makeRequest<updateProductSuccessResponse>(payloadWithAuth).then((response) => {
-                    expect(response.status).to.eq(201);
+                cy.api_makeRequest<updateProductSuccessResponse>(productUpdatedPayload).then((response) => {
+                    expect(response.status).to.eq(200);
                     expect(response.body.message).to.eq('Product successfully updated');
                     expect(response.body.product).to.deep.include({
-                            productId: result.productId,
-                            title: product.title,
-                            price: product.price
-                        });
+                        productId: result.productId,
+                        title: product.title,
+                        price: product.price
+                    });
                 });
             });
         });

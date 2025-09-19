@@ -36,7 +36,7 @@ describe('API - Get all products', () => {
             cy.api_makeRequest<ErrorResponse>(payloadWithAuth)
                 .assertFailResponse({
                     status: 404,
-                    message: 'No products registred'
+                    message: 'No products have been registered yet'
                 });
         });
 

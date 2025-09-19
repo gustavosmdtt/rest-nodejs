@@ -61,12 +61,10 @@ describe('API - Delete products', () => {
 
         it('should delete a product with status code 202', () => {
             cy.seedProductDB({ title: 'Bola de Vôlei', price: 59.90 }).then((product) => {
-                payloadWithAuth = {
-                    url: `produtos/${product.productId}`
-                };
+                payloadWithAuth.url = `produtos/${product.productId}`;
 
                 cy.api_makeRequest<DeleteSuccessResponse>(payloadWithAuth).then((response) => {
-                    expect(response.status).to.eq(201);
+                    expect(response.status).to.eq(202);
                     expect(response.body).to.have.property('message', 'Product successfully deleted');
                 });
             });
