@@ -30,7 +30,7 @@ Este é um projeto de portfólio que implementa uma API REST para um e-commerce 
 2.  **Crie os arquivos de ambiente:**
     Use os arquivos de exemplo para criar as variáveis de ambiente necessárias.
     ```bash
-    cp docker.env && cp .env
+    cp docker.example.env docker.env && cp .example.env .env
     ```
 3. **Instale as dependências**
     ```bash
