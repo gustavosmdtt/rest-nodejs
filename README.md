@@ -1,6 +1,4 @@
-# API REST com NodeJS
-
-Uma API de estudos construída com NodeJS e Express, focada em boas práticas de desenvolvimento, mas com enfasê nos testes de API automatizados com Cypress e PactumJS.
+<h1 align="center">Projeto Portifólio | Testes Avançados de API</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Node.js-20+-brightgreen?logo=node.js" alt="NodeJS version">
@@ -9,6 +7,9 @@ Uma API de estudos construída com NodeJS e Express, focada em boas práticas de
   <img src="https://img.shields.io/badge/BDD%20Tests-Cucumber-28a745?logo=cucumber" alt="Cucumber BDD Tests">
   <img src="https://img.shields.io/badge/License-ISC-lightgrey" alt="License">
 </p>
+
+Uma API de estudos construída com NodeJS e Express, focada em boas práticas de desenvolvimento, mas com enfasê nos testes de API automatizados com Cypress e PactumJS.
+
 
 ## Visão Geral
 
