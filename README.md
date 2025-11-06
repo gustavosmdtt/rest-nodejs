@@ -43,6 +43,12 @@ Este é um projeto de portfólio que implementa uma API REST para um e-commerce 
     ```
     A API estará rodando em `http://localhost:3000`.
 
+## Swagger
+
+A documentação interativa da API, gerada com Swagger. Após subir a Docker, você pode ser acessada em: <br>
+`http://localhost:3000/api-docs` <br>
+> A URL de acesso pode variar dependendo da configuração no arquivo `src/app.js`.
+
 ## Testando
 
 O projeto possui duas formas de testes. Certifique-se de que a aplicação esteja em execução antes de rodá-los.
