@@ -6,10 +6,14 @@ const { handleFormatJsonError } = require('./middleware/validations/errorHandler
 const productRoutes = require('./routes/product');
 const orderRoutes = require('./routes/order');
 const userRoutes = require('./routes/user');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocs = require('./config/swaggerConfig');
 
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false})) // apenas seta dados simples
 app.use(express.json()); // só aceita json de entrada no body
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use((req, res, next) => {
     res.header('Acces-Control-Allow-Origin', '*')
@@ -22,9 +26,9 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use('/produtos', productRoutes);
-app.use('/pedidos', orderRoutes);
-app.use('/usuarios', userRoutes);
+app.use('/products', productRoutes);
+app.use('/orders', orderRoutes);
+app.use('/users', userRoutes);
 
 // Quando não encontra a rota, entra aqui:
 app.use((req, res, next) => {
