@@ -1,0 +1,273 @@
+tags:
+  - name: Products
+    description: API para gerenciamento de produtos.
+
+paths:
+  /products:
+    get:
+      summary: Retorna a lista de todos os produtos
+      tags: [Products]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  quantity:
+                    type: integer
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        productId:
+                          type: integer
+                        title:
+                          type: string
+                        price:
+                          type: number
+
+        '401':
+          description: Não autorizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Access token required
+
+        '404':
+          description: Nenhum produto encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No products have been registered yet
+
+    post:
+      summary: Adiciona um novo produto
+      tags: [Products]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - price
+              properties:
+                title:
+                  type: string
+                price:
+                  type: number
+      responses:
+        '201':
+          description: Produto criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product successfully inserted
+                  product:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                      title:
+                        type: string
+                      price:
+                        type: number
+        '400':
+          $ref: '#/components/responses/InvalidTitleAndPriceError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /products/{productId}:
+    get:
+      summary: Retorna um produto pelo ID
+      tags: [Products]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: integer
+          required: true
+          description: ID do produto
+      responses:
+        '200':
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                      title:
+                        type: string
+                      price:
+                        type: number
+
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          description: Produto não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product not found for the provided ID
+
+    put:
+      summary: Atualiza um produto existente
+      tags: [Products]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: integer
+          required: true
+          description: ID do produto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - price
+              properties:
+                title:
+                  type: string
+                price:
+                  type: number
+
+      responses:
+        '200':
+          description: Produto atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product successfully updated
+                  product:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                      title:
+                        type: string
+                      price:
+                        type: number
+        '400':
+          $ref: '#/components/responses/InvalidTitleAndPriceError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/ProductNotFoundError'
+
+    delete:
+      summary: Deleta um produto
+      tags: [Products]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: integer
+          required: true
+          description: ID do produto
+      responses:
+        '202':
+          description: Produto deletado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product successfully deleted
+
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/ProductNotFoundError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    InvalidTitleAndPriceError:
+      description: Dados inválidos
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+          examples:
+            invalid_price:
+              summary: Preço ausente ou inválido
+              value:
+                message: 'Invalid price. Please provide a numeric value greater than zero.'
+            invalid_title:
+              summary: Título ausente ou inválido
+              value:
+                message: 'Invalid title. Please provide a non-empty title.'
+
+    UnauthorizedError:
+      description: Não autorizado
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Access token required
+
+    ProductNotFoundError:
+      description: Produto não encontrado
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Product not found for the provided ID
