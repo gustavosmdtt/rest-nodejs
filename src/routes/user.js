@@ -6,7 +6,7 @@ const { handleDatabaseConnection } = require('../middleware/database');
 const { findUserByEmail } = require('../middleware/findUser');
 
 router.post(
-    '/cadastro',
+    '/register',
     verifyLoginFields,
     verifyLengthPassword,
     handleDatabaseConnection,

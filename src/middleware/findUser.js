@@ -5,13 +5,9 @@ const findUserByEmail = async (req, res, next) => {
             [req.body.email]
         );
 
-        if (results.length === 0) {
-            return res.status(404).json({
-                message: 'Email not found'
-            });
+        if (results.length > 0) {
+            req.foundUser = results[0];
         }
-
-        req.foundUser = results[0];
         next();
     } catch (error) {
         return res.status(500).json({

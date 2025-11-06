@@ -16,6 +16,12 @@ const verifyPassword = (req, res, next) => {
     const { password } = req.body;
     const { foundUser } = req;
 
+    if (!foundUser) {
+        return res.status(401).json({
+            message: 'Invalid credentials'
+        });
+    }
+
     bcrypt.compare(password, foundUser.password, (error, result) => {
         if (error) {
             return res.status(500).send({
@@ -25,7 +31,7 @@ const verifyPassword = (req, res, next) => {
         }
 
         if (!result) {
-            return res.status(401).send({
+            return res.status(401).json({
                 message: 'Invalid credentials'
             });
         }
