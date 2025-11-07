@@ -8,6 +8,12 @@
   <img src="https://img.shields.io/badge/License-ISC-lightgrey" alt="License">
 </p>
 
+<p align="center">
+  <a href="https://github.com/gustavosmdt/rest-nodejs/actions/workflows/cypress-api-tests.yml">
+    <img src="https://github.com/gustavosmdt/rest-nodejs/actions/workflows/cypress-api-tests.yml/badge.svg" alt="Cypress API Tests">
+  </a>
+</p>
+
 Uma API de estudos construída com NodeJS e Express, focada em boas práticas de desenvolvimento, mas com enfasê nos testes de API automatizados com Cypress e PactumJS.
 
 
@@ -68,6 +74,31 @@ Para rodar os testes de comportamento (BDD) que seguem o fluxo descrito nos arqu
 ```bash
 npm test
 ```
+
+## CI/CD
+
+O projeto utiliza GitHub Actions para executar testes automatizados de API com Cypress em cada Pull Request. O workflow valida todas as funcionalidades da API antes de integrar o código à branch principal.
+
+### Configuração de Secrets no GitHub
+
+Para que o workflow funcione corretamente, os seguintes secrets devem ser configurados no repositório (Settings > Secrets and variables > Actions):
+
+| Secret | Descrição | Exemplo |
+|--------|-----------|---------|
+| `MYSQL_ROOT_PASSWORD` | Senha do usuário root do MySQL | `root123` |
+| `MYSQL_DATABASE` | Nome do banco de dados | `store` |
+| `JWT_KEY` | Chave secreta para geração de tokens JWT | `sua-chave-secreta-jwt` |
+| `CYPRESS_ENV_JSON` | Variáveis de ambiente do Cypress em formato JSON | `{"apiUrl":"http://localhost:3000"}` |
+
+### Recursos do Workflow
+
+- **Cache inteligente:** Cache de dependências NPM e binário do Cypress para execução mais rápida
+- **Retry automático:** Testes com falhas são executados novamente automaticamente (2 tentativas)
+- **Artifacts de falha:** Screenshots e vídeos são salvos automaticamente quando os testes falham
+- **Controle de concorrência:** Workflows antigos são cancelados quando novos commits são enviados
+- **Validação de secrets:** Verifica se todos os secrets necessários estão configurados antes de executar
+- **Path filtering:** Workflow executa apenas quando arquivos relevantes são modificados
+- **Timeout de segurança:** Workflow é cancelado automaticamente após 30 minutos
 
 ---
 

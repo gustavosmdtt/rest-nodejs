@@ -4,11 +4,27 @@ on:
   pull_request:
     branches:
       - master
+    paths:
+      - 'src/**'
+      - 'tests/cypress/**'
+      - 'package*.json'
+      - '.github/workflows/cypress-api-tests.yml'
+      - 'cypress.config.ts'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  MYSQL_VERSION: '8.0'
+  CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
 
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 30
+
     services:
       mysql:
         image: mysql:8.0
@@ -18,59 +34,84 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=5
+          --health-start-period=30s
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Validate required secrets
+        run: |
+          if [ -z "${{ secrets.MYSQL_ROOT_PASSWORD }}" ]; then
+            echo "Error: MYSQL_ROOT_PASSWORD is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.MYSQL_DATABASE }}" ]; then
+            echo "Error: MYSQL_DATABASE is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.JWT_KEY }}" ]; then
+            echo "Error: JWT_KEY is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.CYPRESS_ENV_JSON }}" ]; then
+            echo "Error: CYPRESS_ENV_JSON is not set"
+            exit 1
+          fi
+          echo "✅ All required secrets are configured"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
 
       - name: Create .env file
         run: |
-          echo "MYSQL_USER=root" >> .env
-          echo "MYSQL_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
-          echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
-          echo "MYSQL_HOST=127.0.0.1" >> .env
-          echo "MYSQL_PORT=3306" >> .env
-          echo "JWT_KEY=${{ secrets.JWT_KEY }}" >> .env
+          cat > .env << 'EOF'
+          MYSQL_USER=root
+          MYSQL_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
+          MYSQL_HOST=127.0.0.1
+          MYSQL_PORT=3306
+          JWT_KEY=${{ secrets.JWT_KEY }}
+          EOF
+        shell: bash
 
       - name: Create cypress.env.json
         run: echo '${{ secrets.CYPRESS_ENV_JSON }}' > cypress.env.json
 
-      - name: Cache node modules
-        id: cache-npm
+      - name: Cache Cypress binary
+        id: cache-cypress
         uses: actions/cache@v4
         with:
-          path: node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          path: ${{ env.CYPRESS_CACHE_FOLDER }}
+          key: ${{ runner.os }}-cypress-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-
+            ${{ runner.os }}-cypress-
 
       - name: Install dependencies
-        if: steps.cache-npm.outputs.cache-hit != 'true'
-        run: npm install
+        run: npm ci
 
       - name: Wait for MySQL Service to be ready
         run: npx wait-on tcp:3306 --timeout 60000
-
-      - name: Install MySQL Client
-        run: sudo apt-get update && sudo apt-get install -y mysql-client
 
       - name: Initialize Database
         env:
           MYSQL_PWD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
         run: |
-          mysql -h 127.0.0.1 -u root ${{ secrets.MYSQL_DATABASE }} < ./docker/db/init.sql
+          # Use MySQL client from the Docker container instead of installing locally
+          docker exec ${{ job.services.mysql.id }} mysql -u root -p${{ secrets.MYSQL_ROOT_PASSWORD }} ${{ secrets.MYSQL_DATABASE }} < ./docker/db/init.sql 2>/dev/null || \
+          # Fallback: Install client if Docker exec fails
+          (sudo apt-get update && sudo apt-get install -y mysql-client && \
+           mysql -h 127.0.0.1 -u root ${{ secrets.MYSQL_DATABASE }} < ./docker/db/init.sql)
 
       - name: Start the application
-        run: npm start & disown
+        run: npm start &
 
       - name: Wait for server to be ready
         run: npx wait-on http://localhost:3000 --timeout 60000
@@ -81,3 +122,34 @@ jobs:
           spec: "tests/cypress/api/**/*.cy.ts"
           browser: chrome
           headless: true
+          install: false
+          config: retries=2
+
+      - name: Upload Cypress screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: tests/cypress/screenshots
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Upload Cypress videos
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-videos
+          path: tests/cypress/videos
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Generate test summary
+        if: always()
+        run: |
+          echo "## Cypress Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Workflow**: ${{ github.workflow }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ github.head_ref }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Browser**: Chrome" >> $GITHUB_STEP_SUMMARY
+          echo "- **Node Version**: ${{ env.NODE_VERSION }}" >> $GITHUB_STEP_SUMMARY
