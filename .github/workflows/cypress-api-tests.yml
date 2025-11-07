@@ -60,6 +60,15 @@ jobs:
       - name: Wait for MySQL Service to be ready
         run: npx wait-on tcp:3306 --timeout 60000
 
+      - name: Install MySQL Client
+        run: sudo apt-get update && sudo apt-get install -y mysql-client
+
+      - name: Initialize Database
+        env:
+          MYSQL_PWD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+        run: |
+          mysql -h 127.0.0.1 -u root ${{ secrets.MYSQL_DATABASE }} < ./docker/db/init.sql
+
       - name: Start the application
         run: npm start & disown
 

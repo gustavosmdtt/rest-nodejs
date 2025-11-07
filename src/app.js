@@ -10,7 +10,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocs = require('./config/swaggerConfig');
 
 app.use(morgan('dev'));
-app.use(express.urlencoded({ extended: false})) // apenas seta dados simples
+app.use(express.urlencoded({ extended: false })) // apenas seta dados simples
 app.use(express.json()); // só aceita json de entrada no body
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
@@ -29,6 +29,12 @@ app.use((req, res, next) => {
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
 app.use('/users', userRoutes);
+
+app.get('/', (req, res, next) => {
+    res.status(200).send({
+        message: 'API is running!'
+    });
+});
 
 // Quando não encontra a rota, entra aqui:
 app.use((req, res, next) => {
