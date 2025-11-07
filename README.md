@@ -10,6 +10,8 @@
 
 Uma API de estudos construída com NodeJS e Express, focada em boas práticas de desenvolvimento, mas com enfasê nos testes de API automatizados com Cypress e PactumJS.
 
+Testando CI/CD com GitHub Actions.
+
 
 ## Visão Geral
 
