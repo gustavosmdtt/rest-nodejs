@@ -61,7 +61,7 @@ jobs:
         run: npx wait-on tcp:3306 --timeout 60000
 
       - name: Start the application
-        run: npm start &
+        run: npm start & disown
 
       - name: Wait for server to be ready
         run: npx wait-on http://localhost:3000 --timeout 60000
