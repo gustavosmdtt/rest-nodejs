@@ -8,7 +8,7 @@ describe('User - Login API', () => {
 
     const options: APIPayload<UserPayload> = {
         method: 'POST',
-        url: 'usuarios/login',
+        url: 'users/login',
         failOnStatusCode: false,
         body: {
             email: fakerEmail,
@@ -19,7 +19,7 @@ describe('User - Login API', () => {
     before(() => {
         const newUser: APIPayload<UserPayload> = {
             ...options,
-            url: 'usuarios/cadastro',
+            url: 'users/register',
         }
 
         cy.api_makeRequest<UserSuccessResponse>(newUser);

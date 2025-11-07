@@ -4,7 +4,7 @@ import { APIPayload, ErrorResponse } from "tests/cypress/types/types";
 describe('API - Update products', () => {
     const payload: APIPayload = {
         method: 'PUT',
-        url: 'produtos/1',
+        url: 'products/1',
         body: {
             title: 'Caneca',
             price: 15.99
@@ -38,7 +38,7 @@ describe('API - Update products', () => {
         it('should return error 404 when non-existent product ID', () => {
             const nonExistentProduct: APIPayload = {
                 ...payloadWithAuth,
-                url: 'produtos/9999'
+                url: 'products/9999'
             };
 
             cy.api_makeRequest<ErrorResponse>(nonExistentProduct)
@@ -92,7 +92,7 @@ describe('API - Update products', () => {
             cy.seedProductDB(product).then((result) => {
                 const productUpdatedPayload = {
                     ...payloadWithAuth,
-                    url: `produtos/${result.productId}`,
+                    url: `products/${result.productId}`,
                     body: {
                         title: product.title,
                         price: product.price

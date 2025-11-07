@@ -8,7 +8,7 @@ describe('User - Register API', () => {
 
     const registryOptions: APIPayload<UserPayload> = {
         method: 'POST',
-        url: 'usuarios/cadastro',
+        url: 'users/register',
         failOnStatusCode: false,
         body: {
             email: fakerEmail,

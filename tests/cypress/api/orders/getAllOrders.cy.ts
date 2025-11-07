@@ -4,7 +4,7 @@ import { APIPayload, ErrorResponse } from "tests/cypress/types/types";
 describe('API - Orders', () => {
     const payload: APIPayload = {
         method: 'GET',
-        url: 'pedidos',
+        url: 'orders',
         failOnStatusCode: false
     };
 
