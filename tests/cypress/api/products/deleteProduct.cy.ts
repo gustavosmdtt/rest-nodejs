@@ -54,7 +54,7 @@ describe('API - Delete products', () => {
                 cy.api_makeRequest<ErrorResponse>(invalidPayload)
                     .assertFailResponse({
                         status: 400,
-                        message: 'Invalid order ID format'
+                        message: 'Invalid product ID format'
                     });
             });
         });
