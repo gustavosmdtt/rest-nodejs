@@ -85,6 +85,13 @@ jobs:
           echo "Database initialized successfully"
 
       - name: Start the application
+        env:
+          MYSQL_USER: root
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PORT: 3306
+          JWT_KEY: ${{ secrets.JWT_KEY }}
         run: npm start &
 
       - name: Wait for server to be ready
