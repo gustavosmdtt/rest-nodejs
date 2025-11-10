@@ -99,6 +99,12 @@ jobs:
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
+        env:
+          MYSQL_USER: root
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PORT: 3306
         with:
           spec: "tests/cypress/api/**/*.cy.ts"
           browser: chrome
