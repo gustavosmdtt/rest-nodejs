@@ -3,7 +3,7 @@ import { APIPayload, DeleteSuccessResponse, ErrorResponse } from "tests/cypress/
 describe('API - Delete products', () => {
     const payload: APIPayload = {
         method: 'DELETE',
-        url: 'produtos/1',
+        url: 'products/1',
         failOnStatusCode: false
     };
 
@@ -33,7 +33,7 @@ describe('API - Delete products', () => {
         it('should return error 404 when non-existent product ID', () => {
             const nonExistentProduct: APIPayload = {
                 ...payloadWithAuth,
-                url: 'produtos/9999'
+                url: 'products/9999'
             };
 
             cy.api_makeRequest<ErrorResponse>(nonExistentProduct)
@@ -48,20 +48,20 @@ describe('API - Delete products', () => {
             it(`should return error 400 with invalid ID value (${invalidValue})`, () => {
                 const invalidPayload: APIPayload = {
                     ...payloadWithAuth,
-                    url: `pedidos/${invalidValue}`
+                    url: `products/${invalidValue}`
                 };
 
                 cy.api_makeRequest<ErrorResponse>(invalidPayload)
                     .assertFailResponse({
                         status: 400,
-                        message: 'Invalid order ID format'
+                        message: 'Invalid product ID format'
                     });
             });
         });
 
         it('should delete a product with status code 202', () => {
             cy.seedProductDB({ title: 'Bola de Vôlei', price: 59.90 }).then((product) => {
-                payloadWithAuth.url = `produtos/${product.productId}`;
+                payloadWithAuth.url = `products/${product.productId}`;
 
                 cy.api_makeRequest<DeleteSuccessResponse>(payloadWithAuth).then((response) => {
                     expect(response.status).to.eq(202);

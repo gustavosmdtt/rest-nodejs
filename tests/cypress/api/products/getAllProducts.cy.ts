@@ -5,7 +5,7 @@ describe('API - Get all products', () => {
 
     const payload: APIPayload = {
         method: 'GET',
-        url: 'produtos',
+        url: 'products',
         failOnStatusCode: false
     };
 

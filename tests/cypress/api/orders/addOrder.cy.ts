@@ -4,7 +4,7 @@ import { APIPayload, ErrorResponse } from "tests/cypress/types/types";
 describe('Order - API adding a order', () => {
     const payload: APIPayload = {
         method: 'POST',
-        url: 'pedidos',
+        url: 'orders',
         body: {
             productId: 1,
             quantity: 2

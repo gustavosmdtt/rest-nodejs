@@ -3,7 +3,7 @@ import { APIPayload, DeleteSuccessResponse, ErrorResponse } from "tests/cypress/
 describe('API - Orders', () => {
     const payload: APIPayload = {
         method: 'DELETE',
-        url: 'pedidos/1',
+        url: 'orders/1',
         failOnStatusCode: false
     };
 
@@ -32,7 +32,7 @@ describe('API - Orders', () => {
         it('should return error 404 with non-existent ID', () => {
             const invalidPayload: APIPayload = {
                 ...payloadWithAuth,
-                url: 'pedidos/99999'
+                url: 'orders/99999'
             };
 
             cy.api_makeRequest<ErrorResponse>(invalidPayload)
@@ -47,7 +47,7 @@ describe('API - Orders', () => {
             it('should return error 400 with invalid ID value', () => {
                 const invalidPayload: APIPayload = {
                     ...payloadWithAuth,
-                    url: `pedidos/${invalidValue}`
+                    url: `orders/${invalidValue}`
                 };
 
                 cy.api_makeRequest<ErrorResponse>(invalidPayload)
@@ -66,7 +66,7 @@ describe('API - Orders', () => {
                 cy.seedOrderDB(idProduct);
 
                 payloadWithAuth = {
-                    url: `pedidos/${idProduct}`
+                    url: `orders/${idProduct}`
                 }
             });
 

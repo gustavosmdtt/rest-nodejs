@@ -5,7 +5,7 @@ describe('API - Adding products', () => {
 
     const payload: APIPayload = {
         method: 'POST',
-        url: 'produtos',
+        url: 'products',
         body: {
             title: 'Caneca',
             price: 12.99

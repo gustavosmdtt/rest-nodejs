@@ -1,4 +1,8 @@
-require('dotenv').config();
+// Only load dotenv if not in CI environment
+if (!process.env.CI) {
+    require('dotenv').config();
+}
+
 import { defineConfig } from 'cypress';
 const pool = require('./src/mysql');
 
@@ -12,7 +16,7 @@ export default defineConfig({
         ],
         fixturesFolder: 'tests/cypress/fixtures',
         screenshotsFolder: 'tests/cypress/screenshots',
-        video: false,
+        video: process.env.CI === 'true',
         watchForFileChanges: false,
         setupNodeEvents(on, config) {
             on('task', {

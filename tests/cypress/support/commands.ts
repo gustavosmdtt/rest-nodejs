@@ -19,7 +19,7 @@ Cypress.Commands.add('api_login', (user) => {
 
     const loginPayload: APIPayload = {
         method: 'POST',
-        url: 'usuarios/login',
+        url: 'users/login',
         body: {
             email: currentUser.email,
             password: currentUser.password

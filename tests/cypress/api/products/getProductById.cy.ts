@@ -5,7 +5,7 @@ describe('API - Get product by ID', () => {
 
     const payload: APIPayload = {
         method: 'GET',
-        url: 'produtos/1',
+        url: 'products/1',
         failOnStatusCode: false
     };
 
@@ -43,7 +43,7 @@ describe('API - Get product by ID', () => {
         it('should return error 404 when non-existent product ID', () => {
             const nonExistentProduct: APIPayload = {
                 ...payloadWithAuth,
-                url: 'produtos/9999',
+                url: 'products/9999',
             };
 
             cy.api_makeRequest<ErrorResponse>(nonExistentProduct)
@@ -58,7 +58,7 @@ describe('API - Get product by ID', () => {
 
             cy.seedProductDB(product).then((result) => {
                 const id = result.productId;
-                payloadWithAuth.url = `produtos/${id}`
+                payloadWithAuth.url = `products/${id}`
 
                 cy.api_makeRequest<getProductByIdSuccessResponse>(payloadWithAuth).then((response) => {
                     expect(response.status).to.eq(200);

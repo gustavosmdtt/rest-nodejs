@@ -8,6 +8,12 @@
   <img src="https://img.shields.io/badge/License-ISC-lightgrey" alt="License">
 </p>
 
+<p align="center">
+  <a href="https://github.com/gustavosmdtt/rest-nodejs/actions/workflows/cypress-api-tests.yml">
+    <img src="https://github.com/gustavosmdtt/rest-nodejs/actions/workflows/cypress-api-tests.yml/badge.svg" alt="Cypress API Tests">
+  </a>
+</p>
+
 Uma API de estudos construída com NodeJS e Express, focada em boas práticas de desenvolvimento, mas com enfasê nos testes de API automatizados com Cypress e PactumJS.
 
 
@@ -68,6 +74,19 @@ Para rodar os testes de comportamento (BDD) que seguem o fluxo descrito nos arqu
 ```bash
 npm test
 ```
+
+## CI/CD
+
+O projeto utiliza **GitHub Actions** para executar automaticamente os testes de API com Cypress em cada Pull Request para a branch `master`, garantindo a qualidade do código antes da integração.
+
+**Recursos do Workflow:**
+- Cache de dependências NPM e binário do Cypress
+- Retry automático de testes (2 tentativas)
+- Upload de screenshots e vídeos em caso de falhas
+- Controle de concorrência (workflows antigos são cancelados)
+- Path filtering (executa apenas quando arquivos relevantes são modificados)
+
+**Secrets necessários:** `MYSQL_ROOT_PASSWORD`, `MYSQL_DATABASE`, `JWT_KEY`, `CYPRESS_ENV_JSON`
 
 ---
 

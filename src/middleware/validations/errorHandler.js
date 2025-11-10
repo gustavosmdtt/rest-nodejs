@@ -20,7 +20,19 @@ const handleTypeQuantityFormat = (req, res, next) => {
     next();
 }
 
+const handleTypeProductIdFormat = (req, res, next) => {
+    const productId = req.params.productId;
+    if (productId === undefined || productId === null || isNaN(productId) || Number(productId) <= 0) {
+        return res.status(400).send({
+            message: 'Invalid product ID format'
+        });
+    }
+
+    next();
+}
+
 module.exports = { 
     handleFormatJsonError,
-    handleTypeQuantityFormat
+    handleTypeQuantityFormat,
+    handleTypeProductIdFormat
 };

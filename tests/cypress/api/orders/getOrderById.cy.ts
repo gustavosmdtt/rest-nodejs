@@ -4,7 +4,7 @@ import { APIPayload, ErrorResponse } from "tests/cypress/types/types";
 describe('API - Orders', () => {
     const payload: APIPayload = {
         method: 'GET',
-        url: 'pedidos/1',
+        url: 'orders/1',
         failOnStatusCode: false
     };
 
@@ -34,7 +34,7 @@ describe('API - Orders', () => {
         it('should return error 404 with non-existent ID', () => {
             const invalidPayload: APIPayload = {
                 ...payloadWithAuth,
-                url: 'pedidos/99999'
+                url: 'orders/99999'
             };
 
             cy.api_makeRequest<ErrorResponse>(invalidPayload)
@@ -49,7 +49,7 @@ describe('API - Orders', () => {
             it('should return error 400 with invalid ID value', () => {
                 const invalidPayload: APIPayload = {
                     ...payloadWithAuth,
-                    url: `pedidos/${invalidValue}`
+                    url: `orders/${invalidValue}`
                 };
 
                 cy.api_makeRequest<ErrorResponse>(invalidPayload)
@@ -63,7 +63,7 @@ describe('API - Orders', () => {
         it('should get order by ID and return status 200', () => {
             cy.seedProductDB({ title: 'Livro', price: 9.90 }).then((product) => {
                 cy.seedOrderDB(product.productId).then((order) => {
-                    payloadWithAuth.url = `pedidos/${product.productId}`
+                    payloadWithAuth.url = `orders/${product.productId}`
 
                     cy.api_makeRequest<getOrderByIdSuccessResponse>(payloadWithAuth).then((response) => {
                         expect(response.status).to.equal(200);
