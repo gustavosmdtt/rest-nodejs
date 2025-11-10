@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/gustavosmdt/rest-nodejs/actions/workflows/cypress-api-tests.yml">
-    <img src="https://github.com/gustavosmdt/rest-nodejs/actions/workflows/cypress-api-tests.yml/badge.svg" alt="Cypress API Tests">
+  <a href="https://github.com/gustavosmdtt/rest-nodejs/actions/workflows/cypress-api-tests.yml">
+    <img src="https://github.com/gustavosmdtt/rest-nodejs/actions/workflows/cypress-api-tests.yml/badge.svg" alt="Cypress API Tests">
   </a>
 </p>
 
